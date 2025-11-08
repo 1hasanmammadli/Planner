@@ -1,0 +1,24 @@
+{
+  "name": "Weekly Scheduler",
+  "short_name": "Scheduler",
+  "description": "Plan your week, stay organized",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#6B21A8",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/6B21A8/ffffff?text=WS",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/6B21A8/ffffff?text=WS",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

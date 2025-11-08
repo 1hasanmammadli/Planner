@@ -59,6 +59,10 @@
             React.createElement('line', { x1: 21, y1: 14, x2: 3, y2: 14 }),
             React.createElement('line', { x1: 17, y1: 18, x2: 3, y2: 18 })
         );
+        
+        const Check = () => React.createElement('svg', { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 3 },
+            React.createElement('polyline', { points: '20 6 9 17 4 12' })
+        );
 
         function WeeklyPlanner() {
             const [tasks, setTasks] = useState(() => {
@@ -97,7 +101,7 @@
                 const taskId = Date.now();
                 setTasks(prev => ({
                     ...prev,
-                    [selectedDay]: [...(prev[selectedDay] || []), { ...newTask, id: taskId }]
+                    [selectedDay]: [...(prev[selectedDay] || []), { ...newTask, id: taskId, done: false }]
                 }));
                 
                 setNewTask({ title: '', time: '', description: '' });
@@ -108,6 +112,15 @@
                 setTasks(prev => ({
                     ...prev,
                     [day]: prev[day].filter(task => task.id !== taskId)
+                }));
+            };
+            
+            const toggleTaskDone = (day, taskId) => {
+                setTasks(prev => ({
+                    ...prev,
+                    [day]: prev[day].map(task => 
+                        task.id === taskId ? { ...task, done: !task.done } : task
+                    )
                 }));
             };
 
@@ -159,20 +172,32 @@
                                 : sortedTasks(selectedDay).map(task =>
                                     React.createElement('div', {
                                         key: task.id,
-                                        className: 'p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 backdrop-blur-sm rounded-xl border border-purple-500/40 shadow-lg hover:shadow-purple-500/50 transition-all hover:scale-[1.02]'
+                                        className: `p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 backdrop-blur-sm rounded-xl border border-purple-500/40 shadow-lg hover:shadow-purple-500/50 hover:shadow-xl transition-all duration-300 ${task.done ? 'opacity-60' : ''}`
                                     },
                                         React.createElement('div', { className: 'flex justify-between items-start mb-2' },
-                                            React.createElement('h3', { className: 'font-semibold text-white text-lg flex-1' }, task.title),
+                                            React.createElement('div', { className: 'flex items-start gap-3 flex-1' },
+                                                React.createElement('button', {
+                                                    onClick: () => toggleTaskDone(selectedDay, task.id),
+                                                    className: `flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all mt-0.5 ${
+                                                        task.done 
+                                                            ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-green-400' 
+                                                            : 'border-purple-400 hover:border-pink-400'
+                                                    }`
+                                                },
+                                                    task.done && React.createElement(Check)
+                                                ),
+                                                React.createElement('h3', { className: `font-semibold text-white text-lg ${task.done ? 'line-through' : ''}` }, task.title)
+                                            ),
                                             React.createElement('button', {
                                                 onClick: () => deleteTask(selectedDay, task.id),
                                                 className: 'text-pink-400 hover:text-pink-300 ml-2 transition-colors'
                                             }, React.createElement(X))
                                         ),
-                                        React.createElement('div', { className: 'flex items-center text-purple-300 mb-2' },
+                                        React.createElement('div', { className: `flex items-center text-purple-300 mb-2 ml-9 ${task.done ? 'line-through' : ''}` },
                                             React.createElement(Clock),
                                             React.createElement('span', { className: 'font-medium ml-2' }, task.time)
                                         ),
-                                        task.description && React.createElement('div', { className: 'flex items-start text-purple-200 mt-3 pt-3 border-t border-purple-500/30' },
+                                        task.description && React.createElement('div', { className: `flex items-start text-purple-200 mt-3 pt-3 border-t border-purple-500/30 ml-9 ${task.done ? 'line-through' : ''}` },
                                             React.createElement(AlignLeft),
                                             React.createElement('p', { className: 'text-sm ml-2' }, task.description)
                                         )
